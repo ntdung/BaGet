@@ -107,6 +107,8 @@ namespace BaGet.Core
 
             services.TryAddTransient(IMirrorServiceFactory);
             services.TryAddTransient(IMirrorClientFactory);
+
+            services.TryAddTransient<IV2Builder, V2Builder>();
         }
 
         private static void AddDefaultProviders(this IServiceCollection services)
