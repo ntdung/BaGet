@@ -19,18 +19,15 @@ namespace BaGet.Web
     {
         private readonly ISearchService _search;
         private readonly IMirrorService _mirror;
-        private readonly IPackageService _packages; // TODO: Move single package version lookup to mirror.
         private readonly IV2Builder _builder;
 
         public V2ApiController(
             ISearchService search,
             IMirrorService mirror,
-            IPackageService packages,
             IV2Builder builder)
         {
             _search = search ?? throw new ArgumentNullException(nameof(search));
             _mirror = mirror ?? throw new ArgumentNullException(nameof(mirror));
-            _packages = packages ?? throw new ArgumentNullException(nameof(packages));
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
 
@@ -154,9 +151,7 @@ namespace BaGet.Web
                 return BadRequest();
             }
 
-            await _mirror.MirrorAsync(id, nugetVersion, cancellationToken);
-
-            var package = await _packages.FindOrNullAsync(id, nugetVersion, includeUnlisted: true, cancellationToken);
+            var package = await _mirror.FindPackageOrNullAsync(id, nugetVersion, cancellationToken);
             if (package == null)
             {
                 return NotFound();
